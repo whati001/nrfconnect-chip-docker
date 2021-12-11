@@ -32,12 +32,9 @@
 ORG=${1:=nordicsemi}
 VER=${2:=latest}
 
+echo "Build docker container with organisation: ${ORG} and version: ${VER}"
+
 export DOCKER_BUILD_ARGS="--no-cache"
 
-# call ./release_build.sh script
-./script/release_build.sh $ORG $VER
-
-# push to docker hub
-docker tag "$ORG/nrfconnect-chip:$VER" "$ORG/nrfconnect-chip:latest" \
-    && docker push "$ORG/nrfconnect-chip:$VER" \
-    && docker push "$ORG/nrfconnect-chip:latest"
+./nrfconnect-toolchain/build.sh --org "$ORG" --version "$VER" \
+    && ./nrfconnect-chip/build.sh --org "$ORG" --version "$VER"
