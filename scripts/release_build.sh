@@ -29,8 +29,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # use input variable or default
-ORG=${1:=nordicsemi}
-VER=${2:=latest}
+ORG=$1
+VER=$2
+ORG=${ORG:=nordicsemi}
+VER=${VER:=latest}
 
 echo "Build docker container with organisation: ${ORG} and version: ${VER}"
 
