@@ -35,7 +35,7 @@ ARG NCS_REVISION="main"
 ARG CHIP_REVISION="master"
 ARG GN_BUILD_URL="https://chrome-infra-packages.appspot.com/dl/gn/gn/linux-amd64/+/latest"
 
-ARG USERNAME="build"
+ARG USERNAME="nrf-build"
 ARG GROUPNAME=${USERNAME}
 ARG USER_UID="1000"
 ARG USER_GID=${USER_UID}
@@ -43,6 +43,11 @@ ARG USER_GID=${USER_UID}
 ENV NCS_REVISION ${NCS_REVISION}
 ENV CHIP_REVISION ${CHIP_REVISION}
 ENV ZEPHYR_BASE /var/ncs/zephyr
+
+
+RUN groupadd -g ${USER_GID} ${GROUPNAME} \
+    && useradd -l -u ${USER_UID} -g ${GROUPNAME} ${USERNAME} \
+    && usermod -aG "dialout" ${USERNAME}
 
 RUN set -x \
     #
@@ -74,6 +79,9 @@ RUN set -x \
 COPY entrypoint.sh /opt/entrypoint
 COPY welcome.sh /opt/welcome
 COPY setup.sh /usr/bin/setup
+
+# Run container with build user
+USER ${USERNAME}
 
 ENTRYPOINT ["/opt/entrypoint"]
 CMD ["/opt/welcome"]
